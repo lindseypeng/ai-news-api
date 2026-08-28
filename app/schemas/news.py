@@ -1,10 +1,12 @@
 from datetime import datetime
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, ConfigDict, HttpUrl
 
 
 class NewsItem(BaseModel):
     """Canonical news item shared across scraping, enrichment, storage and the API."""
+
+    model_config = ConfigDict(from_attributes=True)
 
     id: int | None = None
 

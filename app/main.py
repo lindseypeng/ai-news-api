@@ -1,10 +1,8 @@
-from app.pipeline import run_pipeline
+from fastapi import FastAPI
 
-def main():
-    print("AI News API starter project is running!")
+from app.api.routes import health, news
 
-    for item in run_pipeline():
-        print(item)
+app = FastAPI(title="AI News API")
 
-if __name__ == "__main__":
-    main()
+app.include_router(news.router)
+app.include_router(health.router)

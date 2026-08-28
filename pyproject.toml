@@ -4,8 +4,12 @@ version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "dotenv>=0.9.9",
+    "fastapi>=0.141.1",
     "openai>=3.3.1",
+    "psycopg2-binary>=2.9.12",
     "pydantic>=2.13.4",
     "requests>=2.34.2",
+    "sqlalchemy>=2.0.52",
     "trafilatura>=2.2.0",
+    "uvicorn>=0.52.4",
 ]

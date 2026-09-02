@@ -13,13 +13,15 @@ Fill in `OPENAI_API_KEY` in `.env`. The PostgreSQL values already match the loca
 
 ## 1. Start PostgreSQL
 
+Uses the `pgvector/pgvector` image (Postgres + the `vector` extension, needed for semantic search).
+
 ```
-docker compose -f week3/database-setup/docker/docker-compose.yml up -d
+docker compose up -d
 ```
 
-## 2. Create the database table (one-time)
+## 2. Create the database tables (one-time)
 
-`app/database/create_tables.py` creates the `news_items` table from `app/database/models.py`.
+`app/database/create_tables.py` enables the `vector` extension and creates `news_items` and `news_chunks` from `app/database/models.py`.
 
 ```
 uv run python -m app.database.create_tables
@@ -39,6 +41,12 @@ uv run python -m app.services.ingestion
 uv run python -m app.services.enrichment
 ```
 
+`app/services/indexing.py` finds stories with no chunks yet, splits their content into token-based chunks, embeds each one, and stores them in `news_chunks` for semantic search.
+
+```
+uv run python -m app.services.indexing
+```
+
 ## 4. Run the API
 
 ```
@@ -51,6 +59,7 @@ Test it:
 curl http://localhost:8001/health/
 curl http://localhost:8001/news/
 curl http://localhost:8001/news/1
+curl "http://localhost:8001/search/?q=ai+privacy+concerns"
 ```
 
 Or open `http://localhost:8001/docs` for the interactive Swagger UI.
@@ -58,8 +67,10 @@ Or open `http://localhost:8001/docs` for the interactive Swagger UI.
 ## Project structure
 
 - `app/scrapers/` — fetch and normalize data from external sources into `NewsItem`
-- `app/agents/` — LLM calls (summarization, tagging)
-- `app/services/` — pipeline stages: `ingestion.py` (scrape → save), `enrichment.py` (enrich → save)
-- `app/database/` — SQLAlchemy connection, models, and queries
-- `app/schemas/` — the shared `NewsItem` Pydantic schema
-- `app/api/routes/` — FastAPI endpoints
+- `app/agents/` — LLM calls: `news_agent.py` (summarization, tagging), `embedding_agent.py` (embeddings for semantic search)
+- `app/services/` — pipeline stages: `ingestion.py` (scrape → save), `enrichment.py` (enrich → save), `indexing.py` (chunk → embed → save)
+- `app/database/` — SQLAlchemy connection, models (`news_items`, `news_chunks`), and queries
+- `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
+- `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
+
+See `week-4/README.md` for how the semantic search feature was adapted from the tutorial exercises in `week-4/rag-pipeline/` and `week-4/pgvector-setup/`.

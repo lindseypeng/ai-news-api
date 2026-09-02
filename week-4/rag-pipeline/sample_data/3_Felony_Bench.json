@@ -1,0 +1,18 @@
+{
+  "id": null,
+  "source": "hackernews",
+  "source_id": "49389430",
+  "title": "Felony Bench",
+  "url": "https://www.felonybench.com/",
+  "author": "colinprince",
+  "content": "Felony Bench\nA benchmark you really don't want models to be saturated with.\nLearn more\n      Score\n      \n    \n  ↖ Most illegalLeast illegal ↘\n      \n      \n      Anthropic\n    \n      \n      OpenAI\n    \n      \n      Meta\n    \n      \n      Google\n    \n      \n      Moonshot\n    \nScores indicate count of illegal activity. Higher is... you decide.\n| Company | Felonies | Description | Date | Source | \n|---|---|---|---|---|\n| Anthropic | 1 | Exploited auth failures in an API to cancel other people's gym classes |  | ABC Australia | \n| Meta | 1 | Compromise of an internal account at one company |  | The Information | \n| Anthropic | 4 | Unauthorized use of GitHub credentials; Dependabot supply-chain attack; social engineering email campaign; public exposure of a malicious DNS server |  | AISI | \n| OpenAI | 2 | Unauthorized use of GitHub credentials; public exposure of a malicious DNS server |  | OpenAI AISI | \n| OpenAI | 1 | Compromise of an internal account from a misconfigured CTF evaluation |  | OpenAI | \n| OpenAI | 4 | Compromise of internal accounts at four companies as part of the Hugging Face incident |  | OpenAI Reuters | \n| Anthropic | 3 | Compromise of internal accounts at three companies |  | Anthropic | \n| OpenAI | 1 | Compromise of Hugging Face during a model evaluation |  | OpenAI | \nMethodology\nFelony Bench counts unique instances where AI agents affect third-party entities. Escaping a sandbox alone does not constitute a counted incident. It is for these reasons that Frontier Security's Kimi K3 incident and Alibaba's ROME incident are not counted.",
+  "scraped_at": "2026-08-22T05:04:52.215245Z",
+  "summary": "The Felony Bench evaluates AI models based on their illegal activities, tallying instances where AI agents impact third-party entities, with companies like Anthropic, OpenAI, and Meta being assessed for incidents involving unauthorized access and compromises.",
+  "tags": [
+    "AI Ethics",
+    "Cybersecurity",
+    "Technology Accountability",
+    "Machine Learning",
+    "Data Breaches"
+  ]
+}

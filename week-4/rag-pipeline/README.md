@@ -1,6 +1,6 @@
 # End-to-End RAG Pipeline
 
-This directory contains a complete implementation of a Retrieval-Augmented Generation (RAG) pipeline using PGVector, OpenAI embeddings, and local scraped/enriched news articles (`data/enriched/`) as the example dataset.
+This directory contains a complete implementation of a Retrieval-Augmented Generation (RAG) pipeline using PGVector, OpenAI embeddings, and a set of sample news articles bundled in `sample_data/` as the example dataset. This folder is self-contained: the sample data is committed here, so it doesn't depend on the main app's scraping/enrichment pipeline having been run.
 
 ## Project Structure
 
@@ -10,6 +10,7 @@ rag-pipeline/
 ├── examples.py                 # Usage examples
 ├── build_vectordb.py           # Database setup script (run once)
 ├── README.md                   # This file
+├── sample_data/                # Bundled sample news articles (NewsItem JSON)
 └── rag/                        # Implementation package (no need to modify)
     ├── __init__.py     
     ├── config.py               # Configuration settings
@@ -33,16 +34,36 @@ The RAG pipeline consists of the following components:
 
 - Docker and Docker Compose installed
 - OpenAI API key
-- Python 3.9+
+- `uv` installed (this pipeline runs inside the main project's environment,
+  it has no dependencies of its own)
+
+## Dependencies
+
+This pipeline's packages are declared in the root `pyproject.toml`/`uv.lock`
+and installed automatically by `uv sync` (Setup step 1 below) — no manual
+`uv add` needed. Beyond what the main app already required (`openai`,
+`dotenv`), this pipeline specifically needs:
+
+- `pgvector` — SQLAlchemy/psycopg integration for Postgres's `vector` type
+- `psycopg[binary]` — the Postgres driver `vector_store.py` connects with
+- `tiktoken` — token-based chunking in `document_processor.py`
+- `tqdm` — progress bars in `embedding_service.py`
 
 ## Setup
 
- **Start PGVector Database**:
-```bash
-cd ../pgvector-setup/docker
-docker-compose up -d
-cd ../../rag-pipeline
-```
+1. From the project root, install dependencies and set up `.env` (skip if
+   already done for the main app):
+   ```bash
+   uv sync
+   cp .env.example .env   # fill in OPENAI_API_KEY
+   ```
+
+2. Start Postgres (pgvector-enabled) from the project root:
+   ```bash
+   docker compose up -d
+   ```
+
+3. `cd week-4/rag-pipeline` before running anything below.
 
 ## Usage
 
@@ -51,11 +72,11 @@ cd ../../rag-pipeline
 First, populate the vector database with your local news articles:
 
 ```bash
-python build_vectordb.py
+uv run python build_vectordb.py
 ```
 
 This will:
-- Load every article JSON file from `data/enriched/`
+- Load every article JSON file from `sample_data/`
 - Split each article into token-based chunks
 - Generate embeddings for each chunk
 - Store everything in PGVector
@@ -65,7 +86,7 @@ This will:
 Run the interactive query interface:
 
 ```bash
-python rag_chat.py
+uv run python rag_chat.py
 ```
 
 ### Step 3: Explore Examples
@@ -73,7 +94,7 @@ python rag_chat.py
 Study the example scripts to understand different usage patterns:
 
 ```bash
-python examples.py
+uv run python examples.py
 ```
 
 ## Programmatic Usage

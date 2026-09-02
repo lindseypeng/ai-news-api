@@ -24,8 +24,8 @@ EMBEDDING_DIMENSIONS = 1536
 CHAT_MODEL = "gpt-4o-mini"
 
 # Document processing
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-NEWS_DATA_DIR = PROJECT_ROOT / "data" / "enriched"
+RAG_PIPELINE_DIR = Path(__file__).resolve().parents[1]
+NEWS_DATA_DIR = RAG_PIPELINE_DIR / "sample_data"
 MAX_TOKENS_PER_CHUNK = 500
 
 # Vector search

@@ -3,7 +3,6 @@ name = "ai-news-api"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "docling>=2.124.0",
     "dotenv>=0.9.9",
     "fastapi>=0.141.1",
     "openai>=3.3.1",
@@ -14,6 +13,7 @@ dependencies = [
     "requests>=2.34.2",
     "sqlalchemy>=2.0.52",
     "tiktoken>=0.14.0",
+    "tqdm>=4.70.0",
     "trafilatura>=2.2.0",
     "uvicorn>=0.52.4",
 ]

@@ -9,6 +9,27 @@ every concept we needed (chunking, embeddings, similarity search); the work
 was wiring those same ideas into our own `app/` structure, our own
 `NewsItem` data, and SQLAlchemy instead of raw `psycopg`.
 
+## Dependencies
+
+Declared in the root `pyproject.toml`/`uv.lock`, installed via `uv sync` —
+no manual `uv add` needed by anyone pulling this branch.
+
+New this week, actually imported by `app/` code:
+- `pgvector` — the `Vector` column type used in `app/database/models.py`
+- `tiktoken` — token-based chunking in `app/services/indexing.py`
+
+Already present since week 3, now actively exercised by the new search
+feature:
+- `fastapi`, `sqlalchemy` — the API layer and ORM
+- `psycopg2-binary` — the driver SQLAlchemy uses under the hood for
+  `postgresql://` connection strings
+
+Not used by `app/` at all — these exist only for the standalone tutorials
+in `week-4/rag-pipeline/` and `week-4/pgvector-setup/`, which talk to
+Postgres directly instead of through SQLAlchemy:
+- `psycopg[binary]` (v3, distinct from `psycopg2-binary` above)
+- `tqdm`
+
 ## Files created / modified, and what each one mirrors
 
 1. **`docker-compose.yml`** (root) — swapped the Postgres image to

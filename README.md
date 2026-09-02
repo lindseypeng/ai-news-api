@@ -73,4 +73,4 @@ Or open `http://localhost:8001/docs` for the interactive Swagger UI.
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
 - `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
 
-See `week-4/README.md` for how the semantic search feature was adapted from the tutorial exercises in `week-4/rag-pipeline/` and `week-4/pgvector-setup/`.
+See `week4/README.md` for how the semantic search feature was adapted from the tutorial exercises in `week4/rag-pipeline/` and `week4/pgvector-setup/`.

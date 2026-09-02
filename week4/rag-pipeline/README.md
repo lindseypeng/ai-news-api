@@ -63,7 +63,7 @@ and installed automatically by `uv sync` (Setup step 1 below) — no manual
    docker compose up -d
    ```
 
-3. `cd week-4/rag-pipeline` before running anything below.
+3. `cd week4/rag-pipeline` before running anything below.
 
 ## Usage
 

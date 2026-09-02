@@ -4,7 +4,7 @@ Goal: add a `GET /search` endpoint that finds news articles by meaning, not
 just by listing everything. No chatbot/answer-generation — retrieval only.
 
 Everything here was adapted from the tutorial code already built in
-`week-4/rag-pipeline/` and `week-4/pgvector-setup/` — that code already had
+`week4/rag-pipeline/` and `week4/pgvector-setup/` — that code already had
 every concept we needed (chunking, embeddings, similarity search); the work
 was wiring those same ideas into our own `app/` structure, our own
 `NewsItem` data, and SQLAlchemy instead of raw `psycopg`.
@@ -25,7 +25,7 @@ feature:
   `postgresql://` connection strings
 
 Not used by `app/` at all — these exist only for the standalone tutorials
-in `week-4/rag-pipeline/` and `week-4/pgvector-setup/`, which talk to
+in `week4/rag-pipeline/` and `week4/pgvector-setup/`, which talk to
 Postgres directly instead of through SQLAlchemy:
 - `psycopg[binary]` (v3, distinct from `psycopg2-binary` above)
 - `tqdm`
@@ -33,7 +33,7 @@ Postgres directly instead of through SQLAlchemy:
 ## Files created / modified, and what each one mirrors
 
 1. **`docker-compose.yml`** (root) — swapped the Postgres image to
-   `pgvector/pgvector:pg17`. Mirrors `week-4/pgvector-setup/docker/docker-compose.yml`
+   `pgvector/pgvector:pg17`. Mirrors `week4/pgvector-setup/docker/docker-compose.yml`
    (same image, same healthcheck pattern). Difference: credentials are pulled
    from `.env` instead of hardcoded, and no `init.sql` is mounted, since our
    tables are created by our own Python code, not raw SQL.
@@ -41,7 +41,7 @@ Postgres directly instead of through SQLAlchemy:
 2. **`app/database/models.py`** — added `NewsChunkModel` (`news_chunks`
    table: `news_item_id` FK, `chunk_index`, `content`, `embedding`, plus an
    HNSW index). Mirrors the table shape in
-   `week-4/rag-pipeline/rag/vector_store.py`'s `setup_database()` (the
+   `week4/rag-pipeline/rag/vector_store.py`'s `setup_database()` (the
    `embedding vector(1536)` column and
    `CREATE INDEX ... USING hnsw (embedding vector_ip_ops)`). Difference: ours
    is a proper SQLAlchemy ORM model with a foreign key back to `news_items`,
@@ -54,13 +54,13 @@ Postgres directly instead of through SQLAlchemy:
    (from week 3) extended, not mirrored from `rag-pipeline`.
 
 4. **`app/agents/embedding_agent.py`** — `create_embedding(text)`. Mirrors
-   `week-4/rag-pipeline/rag/embedding_service.py`'s `create_embedding()`
+   `week4/rag-pipeline/rag/embedding_service.py`'s `create_embedding()`
    (identical OpenAI call: `text-embedding-3-small`, 1536 dimensions).
 
 5. **`app/services/indexing.py`** — the new pipeline stage: finds
    `news_items` with no chunks yet, chunks their content, embeds each chunk,
    stores them. The chunking logic mirrors
-   `week-4/rag-pipeline/rag/document_processor.py`'s `_chunk_text()` (simple
+   `week4/rag-pipeline/rag/document_processor.py`'s `_chunk_text()` (simple
    `tiktoken`-based splitting, 500 tokens per chunk — the same approach we
    already put there when we swapped that pipeline off `docling`). The
    overall flow (chunk → embed → store) mirrors
@@ -68,12 +68,12 @@ Postgres directly instead of through SQLAlchemy:
 
 6. **`app/database/repository.py`** — added `get_unindexed_news_items`,
    `insert_news_chunks`, and `search_similar_chunks`. The search query
-   mirrors `week-4/rag-pipeline/rag/vector_store.py`'s `similarity_search()`
+   mirrors `week4/rag-pipeline/rag/vector_store.py`'s `similarity_search()`
    (rank by inner product), but uses pgvector's SQLAlchemy comparator
    (`.max_inner_product()`) instead of raw SQL's `<#>` operator.
 
 7. **`app/api/routes/search.py`** + **`app/main.py`** — the `GET /search`
-   endpoint. Mirrors `week-4/rag-pipeline/rag/rag_system.py`'s
+   endpoint. Mirrors `week4/rag-pipeline/rag/rag_system.py`'s
    `retrieve_context()` (embed query -> similarity search -> return matches).
    Deliberately does **not** mirror `generate_response()`/`query()` — no LLM
    call at query time, no generated answer, just ranked matches. That's the
@@ -92,7 +92,7 @@ so the new setup wouldn't collide with something already running.
 1. **Stop the tutorial's Postgres container** (it was using the container
    name and port our new root `docker-compose.yml` also needed):
    ```bash
-   docker compose -f week-4/pgvector-setup/docker/docker-compose.yml down
+   docker compose -f week4/pgvector-setup/docker/docker-compose.yml down
    ```
 
 2. **Start the new pgvector-enabled container** from the root compose file:

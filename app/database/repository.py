@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
-from app.database.models import NewsItemModel
+from app.database.models import NewsChunkModel, NewsItemModel
 from app.schemas.news import NewsItem
 
 
@@ -58,3 +58,41 @@ def save_enrichment(db: Session, item_id: int, summary: str, tags: list[str]) ->
     db.commit()
     db.refresh(row)
     return row
+
+
+def get_unindexed_news_items(db: Session) -> list[NewsItemModel]:
+    """Return news items that have content but no chunks yet."""
+    indexed_ids = db.query(NewsChunkModel.news_item_id).distinct()
+    return (
+        db.query(NewsItemModel)
+        .filter(NewsItemModel.content.isnot(None))
+        .filter(~NewsItemModel.id.in_(indexed_ids))
+        .all()
+    )
+
+
+def search_similar_chunks(db: Session, query_embedding: list[float], limit: int = 5):
+    """Find the most similar chunks to a query embedding, joined with their parent article."""
+    distance = NewsChunkModel.embedding.max_inner_product(query_embedding)
+
+    return (
+        db.query(NewsChunkModel, NewsItemModel, distance.label("distance"))
+        .join(NewsItemModel, NewsChunkModel.news_item_id == NewsItemModel.id)
+        .order_by(distance)
+        .limit(limit)
+        .all()
+    )
+
+
+def insert_news_chunks(db: Session, news_item_id: int, chunks: list[dict]) -> None:
+    """Insert chunks (each: {"content": str, "embedding": list[float]}) for a news item."""
+    for i, chunk in enumerate(chunks):
+        db.add(
+            NewsChunkModel(
+                news_item_id=news_item_id,
+                chunk_index=i,
+                content=chunk["content"],
+                embedding=chunk["embedding"],
+            )
+        )
+    db.commit()

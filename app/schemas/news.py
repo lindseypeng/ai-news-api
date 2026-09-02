@@ -29,3 +29,13 @@ class ArticleEnrichment(BaseModel):
 
     summary: str
     tags: list[str]
+
+
+class SearchResult(BaseModel):
+    """A single semantic search hit: a matching chunk and its parent article."""
+
+    news_item_id: int
+    title: str
+    url: HttpUrl
+    chunk_content: str
+    similarity: float

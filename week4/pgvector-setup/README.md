@@ -2,18 +2,6 @@
 
 This comprehensive guide walks you through setting up PostgreSQL as a powerful vector database using the pgvector extension. You'll learn how to implement semantic search, keyword search, and advanced hybrid search capabilities that combine the best of both approaches.
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Why PostgreSQL for Vector Search](#why-postgresql-for-vector-search)
-3. [Docker Setup](#docker-setup)
-4. [Database Configuration](#database-configuration)
-5. [Understanding Vector Indexes](#understanding-vector-indexes)
-6. [Basic Vector Operations](#basic-vector-operations)
-7. [SQLAlchemy Integration](#sqlalchemy-integration)
-8. [Advanced Hybrid Search](#advanced-hybrid-search)
-9. [Metadata Filtering](#metadata-filtering)
-10. [Additional Resources](#additional-resources)
 
 ## Introduction
 

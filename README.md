@@ -47,6 +47,12 @@ uv run python -m app.services.enrichment
 uv run python -m app.services.indexing
 ```
 
+`app/pipeline.py` runs all three stages above in order, in one command:
+
+```
+uv run python -m app.pipeline
+```
+
 ## 4. Run the API
 
 ```

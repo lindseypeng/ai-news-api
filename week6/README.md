@@ -5,19 +5,8 @@ isn't on our laptop, and a weekly job that keeps it updated automatically —
 no manual intervention required.
 
 Almost all of this work is cloud infrastructure configuration (via `gcloud`),
-not code. The only file change in this branch is the `Dockerfile`.
-
-## File changed
-
-**`Dockerfile`** — the previous version never installed dependencies at all
-(`COPY . .` then `CMD ["python", "-m", "app.main"]`, which would just import
-the app and exit immediately). The new version:
-- Installs `uv`, then copies only `pyproject.toml`/`uv.lock` first and runs
-  `uv sync --frozen --no-dev` — dependencies are cached in their own Docker
-  layer, separate from app code, so code edits don't force a full reinstall.
-- Runs `uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}` as a
-  persistent server, listening on the port Cloud Run injects via `$PORT`,
-  instead of the old one-shot command.
+not code — one small `Dockerfile` fix aside, everything below happened
+outside git, directly against Google Cloud and Supabase.
 
 ## Cloud resources created (not files — these live in GCP/Supabase, not git)
 
@@ -37,6 +26,15 @@ the app and exit immediately). The new version:
   then stop," not for serving requests.
 - **Cloud Scheduler job**: `ai-news-pipeline-weekly` — triggers the Job every
   Sunday via HTTP against the Cloud Run Admin API.
+
+## Code change
+
+**`Dockerfile`** — the previous version never installed dependencies at all
+(`COPY . .` then `CMD ["python", "-m", "app.main"]`, which would just import
+the app and exit immediately). The new version installs `uv`, runs
+`uv sync --frozen --no-dev` in its own cached layer, and runs
+`uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}` as a persistent
+server listening on Cloud Run's injected `$PORT`.
 
 ## Terminal commands run, in order
 
@@ -189,6 +187,46 @@ the app and exit immediately). The new version:
     ```
     A new execution name appearing confirms Scheduler successfully triggered
     the Job — not just that Scheduler *tried*.
+
+## Testing the live deployment
+
+Get the deployed URL, then hit it directly — same endpoints as local dev,
+just `https://` with no port instead of `http://localhost:8001`:
+```bash
+gcloud run services describe ai-news-api --region europe-west1 --format="value(status.url)"
+
+curl https://YOUR-SERVICE-URL/health/
+curl https://YOUR-SERVICE-URL/news/
+curl "https://YOUR-SERVICE-URL/search/?q=ai+privacy+concerns"
+```
+(Quote the `/search/` URL — `?` and `&` in a query string have special
+meaning to the shell, `&` especially, since it means "run in background.")
+
+Confirmed working end to end: `scraped_at` timestamps on returned articles
+matched the exact time the scheduled pipeline run had just finished,
+proving the data was genuinely fresh, not cached or fake.
+
+## Security considerations
+
+The service was deployed with `--allow-unauthenticated`, so anyone with the
+URL can call every endpoint, with two different implications:
+
+- **SQL injection: not a risk here.** Every query in `app/database/repository.py`
+  goes through SQLAlchemy's ORM (`.filter()`, `.query()`, `pg_insert().values()`),
+  which parameterizes all values automatically. User input (`q`, `item_id`)
+  is never concatenated into a raw SQL string anywhere in this codebase.
+- **Cost abuse: a real, unresolved risk.** `OPENAI_API_KEY` itself never
+  leaves the server (it's only used inside `embedding_agent.py`/`news_agent.py`),
+  so it can't be stolen through this API. But `/search/` calls
+  `create_embedding()` — a real, billed OpenAI call — on *every* request,
+  with no auth and no rate limit. Anyone can run up the OpenAI bill just by
+  hammering the public `/search/` URL. `/news/` and `/health/` don't call
+  OpenAI, so they're comparatively low-risk (aside from ordinary Cloud Run
+  compute cost, capped somewhat by `--max-instances 1`).
+
+  Not yet implemented, worth considering later: a simple API key required
+  on `/search/` (separate from the OpenAI key), rate limiting, or a billing
+  alert/cap on the OpenAI account as a cheaper stopgap.
 
 ## Why the pipeline runs as a Job, not through the API's main.py
 

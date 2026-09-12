@@ -32,6 +32,19 @@ curl http://localhost:8080/health/
    gcloud auth login
    gcloud config set project YOUR_PROJECT_ID
    ```
+5. Enable every API this deployment needs, upfront — some of these would
+   otherwise get enabled reactively via interactive prompts later (e.g.
+   during `gcloud run deploy`), or block Console access with a confusing
+   "no access" message until enabled (this happened to us with
+   `cloudscheduler.googleapis.com` specifically):
+   ```bash
+   gcloud services enable \
+     run.googleapis.com \
+     cloudbuild.googleapis.com \
+     artifactregistry.googleapis.com \
+     secretmanager.googleapis.com \
+     cloudscheduler.googleapis.com
+   ```
 
 ## 3. Sign up for Supabase and create a Postgres project
 
@@ -153,8 +166,6 @@ with engine.connect() as conn:
 ## 8. Set up Cloud Scheduler to trigger the Job weekly
 
 ```bash
-gcloud services enable cloudscheduler.googleapis.com
-
 gcloud run jobs add-iam-policy-binding ai-news-pipeline \
   --region europe-west1 \
   --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" \

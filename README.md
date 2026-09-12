@@ -70,6 +70,24 @@ curl "http://localhost:8001/search/?q=ai+privacy+concerns"
 
 Or open `http://localhost:8001/docs` for the interactive Swagger UI.
 
+## Testing the live deployment
+
+If this app is deployed to Cloud Run (see `week6/README.md`), get its URL:
+
+```
+gcloud run services describe ai-news-api --region europe-west1 --format="value(status.url)"
+```
+
+Then test it the same way, using `https://` and no port number instead of `http://localhost:8001`:
+
+```
+curl https://YOUR-SERVICE-URL/health/
+curl https://YOUR-SERVICE-URL/news/
+curl "https://YOUR-SERVICE-URL/search/?q=ai+privacy+concerns"
+```
+
+Note the quotes around the `/search/` URL — the `?` and `&` characters in a query string have special meaning to the shell (`&` especially means "run in background"), so quoting tells the shell to pass the whole URL through literally instead of interpreting it.
+
 ## Project structure
 
 - `app/scrapers/` — fetch and normalize data from external sources into `NewsItem`

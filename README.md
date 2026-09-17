@@ -73,7 +73,7 @@ Or open `http://localhost:8001/docs` for the interactive Swagger UI.
 
 ## Testing the live deployment
 
-If this app is deployed to Cloud Run (see `week5/README.md`), get its URL:
+If this app is deployed to Cloud Run, get its URL:
 
 ```
 gcloud run services describe ai-news-api --region europe-west1 --format="value(status.url)"
@@ -98,10 +98,6 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
 - `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
 - `evaluations/` — fixed evaluation corpus, ground-truth questions, loader, and Week 6 RAG evaluation runner
-
-See `week5/README.md` for Docker packaging, deployment concepts, CI/CD,
-Supabase, Google Cloud Run, Secret Manager, Cloud Scheduler, and the optional
-Streamlit presentation layer.
 
 See `week6/README.md` for grounded question answering and evaluation against
 exact numeric, boolean, and short-text answers.

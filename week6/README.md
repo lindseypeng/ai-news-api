@@ -58,10 +58,28 @@ uv run python -m evaluations.run_evaluation --base-url http://localhost:8001
 ```
 
 The runner requires both retrieval of the expected source article and a correct
-answer, prints every result, and exits unsuccessfully if any case fails. It uses
-type-aware deterministic scoring: the first number for numeric answers, the
-leading true/false or yes/no for booleans, and normalized text matching for
-short text answers.
+answer for an end-to-end pass. It reports retrieval accuracy, answer accuracy,
+and combined end-to-end accuracy separately. A less-than-perfect result is
+expected and useful: it shows whether failures come from retrieval or answer
+generation. Scoring uses the first number for numeric answers, the leading
+true/false or yes/no for booleans, and normalized text matching for short text
+answers.
+
+By default this is a reporting exercise, so a low score does not make the
+command fail. To use the evaluation as a CI quality gate, set a threshold such
+as 70%:
+
+```bash
+uv run python -m evaluations.run_evaluation \
+  --base-url http://localhost:8001 \
+  --minimum-accuracy 0.70
+```
+
+Several cases are deliberately non-trivial. For example, the OpenAI Felony
+Bench question requires adding multiple table rows, while similar percentages
+in the travel article test whether retrieval and generation select the right
+number. These questions can legitimately fail; their answers are not hardcoded
+into the API.
 
 Run the scorer's offline tests without a database or OpenAI call:
 

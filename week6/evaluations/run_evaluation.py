@@ -4,7 +4,7 @@ from pathlib import Path
 
 import requests
 
-from evaluations.scoring import answer_matches
+from week6.evaluations.scoring import answer_matches
 
 QUESTIONS_PATH = Path(__file__).with_name("questions.json")
 

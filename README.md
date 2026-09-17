@@ -97,7 +97,7 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 - `app/database/` — SQLAlchemy connection, models (`news_items`, `news_chunks`), and queries
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
 - `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
-- `evaluations/` — fixed evaluation corpus, ground-truth questions, loader, and Week 6 RAG evaluation runner
+- `week6/evaluations/` — fixed evaluation corpus, ground-truth questions, loader, and Week 6 RAG evaluation runner
 
 See `week6/README.md` for grounded question answering and evaluation against
 exact numeric, boolean, and short-text answers.

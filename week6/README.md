@@ -6,7 +6,7 @@ whose answers are explicitly present in the Week 4 sample articles.
 
 ## What is evaluated
 
-The dataset in `evaluations/questions.json` contains:
+The dataset in `week6/evaluations/questions.json` contains:
 
 - percentage and count questions with one exact numeric answer;
 - true/false questions grounded in explicit article statements; and
@@ -41,11 +41,11 @@ curl -X POST http://localhost:8001/ask/ \
 ## Run the evaluation
 
 The configured Supabase database did not contain these older sample records, so
-`evaluations/fixtures.json` contains a compact evaluation corpus derived from
+`week6/evaluations/fixtures.json` contains a compact evaluation corpus derived from
 the relevant sample articles. Load and index it once:
 
 ```bash
-uv run python -m evaluations.load_fixtures
+uv run python -m week6.evaluations.load_fixtures
 ```
 
 The loader is idempotent: it skips existing articles and chunks. It calls the
@@ -54,7 +54,7 @@ embedding API only for fixtures that are not indexed yet.
 Start the API, then run:
 
 ```bash
-uv run python -m evaluations.run_evaluation --base-url http://localhost:8001
+uv run python -m week6.evaluations.run_evaluation --base-url http://localhost:8001
 ```
 
 The runner requires both retrieval of the expected source article and a correct
@@ -70,7 +70,7 @@ command fail. To use the evaluation as a CI quality gate, set a threshold such
 as 70%:
 
 ```bash
-uv run python -m evaluations.run_evaluation \
+uv run python -m week6.evaluations.run_evaluation \
   --base-url http://localhost:8001 \
   --minimum-accuracy 0.70
 ```

@@ -253,6 +253,9 @@ gcloud run services describe ai-news-api --region europe-west1 --format="value(s
 curl https://YOUR-SERVICE-URL/health/
 curl https://YOUR-SERVICE-URL/news/
 curl "https://YOUR-SERVICE-URL/search/?q=ai+privacy+concerns"
+curl -X POST https://YOUR-SERVICE-URL/ask/ \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What are the main AI privacy concerns?"}'
 ```
 (Quote the `/search/` URL — `?` and `&` have special meaning to the shell.)
 
@@ -270,11 +273,10 @@ URL can call every endpoint:
   parameterizes all values automatically. User input is never concatenated
   into a raw SQL string anywhere in this codebase.
 - **Cost abuse: a real, unresolved risk.** `OPENAI_API_KEY` never leaves the
-  server, so it can't be stolen through this API. But `/search/` triggers a
-  real, billed OpenAI call on *every* request, with no auth and no rate
-  limit — anyone can run up the OpenAI bill just by hammering the public
-  URL. Not yet implemented, worth considering later: a simple API key on
-  `/search/`, rate limiting, or a billing alert/cap on the OpenAI account.
+  server, so it can't be stolen through this API. But `/search/` makes a billed
+  embedding call, and `/ask/` makes both an embedding call and an answer-model
+  call. With no auth or rate limit, anyone with the public URL can create API
+  costs. Not yet implemented: an API key, rate limiting, or a billing alert/cap.
 
 ## Why the pipeline runs as a Job, not through the API's main.py
 

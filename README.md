@@ -66,6 +66,7 @@ curl http://localhost:8001/health/
 curl http://localhost:8001/news/
 curl http://localhost:8001/news/1
 curl "http://localhost:8001/search/?q=ai+privacy+concerns"
+curl -X POST http://localhost:8001/ask/ -H 'Content-Type: application/json' -d '{"question":"What are the main AI privacy concerns?"}'
 ```
 
 Or open `http://localhost:8001/docs` for the interactive Swagger UI.
@@ -84,6 +85,7 @@ Then test it the same way, using `https://` and no port number instead of `http:
 curl https://YOUR-SERVICE-URL/health/
 curl https://YOUR-SERVICE-URL/news/
 curl "https://YOUR-SERVICE-URL/search/?q=ai+privacy+concerns"
+curl -X POST https://YOUR-SERVICE-URL/ask/ -H 'Content-Type: application/json' -d '{"question":"What are the main AI privacy concerns?"}'
 ```
 
 Note the quotes around the `/search/` URL — the `?` and `&` characters in a query string have special meaning to the shell (`&` especially means "run in background"), so quoting tells the shell to pass the whole URL through literally instead of interpreting it.
@@ -91,11 +93,11 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 ## Project structure
 
 - `app/scrapers/` — fetch and normalize data from external sources into `NewsItem`
-- `app/agents/` — LLM calls: `news_agent.py` (summarization, tagging), `embedding_agent.py` (embeddings for semantic search)
+- `app/agents/` — LLM calls: `news_agent.py` (summarization and tagging), `embedding_agent.py` (embeddings), `answer_agent.py` (grounded answers)
 - `app/services/` — pipeline stages: `ingestion.py` (scrape → save), `enrichment.py` (enrich → save), `indexing.py` (chunk → embed → save)
 - `app/database/` — SQLAlchemy connection, models (`news_items`, `news_chunks`), and queries
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
-- `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
+- `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic retrieval), `ask.py` (grounded RAG answers), `health.py`
 
 See `week5/README.md` for Docker packaging, deployment concepts, CI/CD,
 Supabase, Google Cloud Run, Secret Manager, Cloud Scheduler, and the optional

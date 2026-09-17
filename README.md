@@ -66,6 +66,7 @@ curl http://localhost:8001/health/
 curl http://localhost:8001/news/
 curl http://localhost:8001/news/1
 curl "http://localhost:8001/search/?q=ai+privacy+concerns"
+curl -X POST http://localhost:8001/ask/ -H 'Content-Type: application/json' -d '{"question":"What are the main AI privacy concerns?"}'
 ```
 
 Or open `http://localhost:8001/docs` for the interactive Swagger UI.
@@ -77,6 +78,6 @@ Or open `http://localhost:8001/docs` for the interactive Swagger UI.
 - `app/services/` — pipeline stages: `ingestion.py` (scrape → save), `enrichment.py` (enrich → save), `indexing.py` (chunk → embed → save)
 - `app/database/` — SQLAlchemy connection, models (`news_items`, `news_chunks`), and queries
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
-- `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
+- `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic retrieval), `ask.py` (grounded RAG answers), `health.py`
 
 See `week4/README.md` for how the semantic search feature was adapted from the tutorial exercises in `week4/rag-pipeline/` and `week4/pgvector-setup/`.

@@ -1,7 +1,8 @@
-# Week 4: Adding Semantic Search to the App
+# Week 4: Adding RAG Question Answering to the App
 
-Goal: add a `GET /search` endpoint that finds news articles by meaning, not
-just by listing everything. No chatbot/answer-generation — retrieval only.
+Goal: add semantic retrieval and grounded question answering. `GET /search`
+finds news articles by meaning, while `POST /ask` retrieves relevant chunks
+and uses an LLM to answer from that evidence.
 
 Everything here was adapted from the tutorial code already built in
 `week4/rag-pipeline/` and `week4/pgvector-setup/` — that code already had
@@ -72,16 +73,19 @@ Postgres directly instead of through SQLAlchemy:
    (rank by inner product), but uses pgvector's SQLAlchemy comparator
    (`.max_inner_product()`) instead of raw SQL's `<#>` operator.
 
-7. **`app/api/routes/search.py`** + **`app/main.py`** — the `GET /search`
-   endpoint. Mirrors `week4/rag-pipeline/rag/rag_system.py`'s
-   `retrieve_context()` (embed query -> similarity search -> return matches).
-   Deliberately does **not** mirror `generate_response()`/`query()` — no LLM
-   call at query time, no generated answer, just ranked matches. That's the
-   one piece intentionally left out, since no chatbot was wanted.
+7. **`app/api/routes/search.py`** — the `GET /search` endpoint. Mirrors
+   `week4/rag-pipeline/rag/rag_system.py`'s `retrieve_context()` (embed query
+   -> similarity search -> return ranked matches).
 
 8. **`app/schemas/news.py`** — added `SearchResult`, the response shape for
-   the new endpoint (parent article info + matching chunk + similarity
-   score).
+   semantic search, plus the request, grounded-answer, citation, and response
+   models used by question answering.
+
+9. **`app/agents/answer_agent.py`** + **`app/api/routes/ask.py`** — the
+   `POST /ask` endpoint. It embeds the question, retrieves relevant chunks,
+   passes only those chunks to the LLM, and returns a grounded answer with
+   citations. This completes the RAG flow represented by
+   `rag_system.py`'s `generate_response()`/`query()` methods.
 
 ## Terminal commands run, in order
 
@@ -129,7 +133,10 @@ so the new setup wouldn't collide with something already running.
    uv run uvicorn app.main:app --reload --port 8001
    ```
 
-7. **Test the endpoint**:
+7. **Test the endpoints**:
    ```bash
    curl "http://localhost:8001/search/?q=ai+privacy+concerns"
+   curl -X POST http://localhost:8001/ask/ \
+     -H 'Content-Type: application/json' \
+     -d '{"question":"What are the main AI privacy concerns?","limit":5}'
    ```

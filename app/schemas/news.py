@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
 
 class NewsItem(BaseModel):
@@ -39,3 +39,36 @@ class SearchResult(BaseModel):
     url: HttpUrl
     chunk_content: str
     similarity: float
+
+
+class AskRequest(BaseModel):
+    """A question to answer from semantically retrieved news chunks."""
+
+    question: str = Field(min_length=1)
+    limit: int = Field(default=5, ge=1, le=10)
+
+
+class AnswerCitation(BaseModel):
+    """Article and chunk used to support an answer."""
+
+    news_item_id: int
+    source_id: str
+    title: str
+    url: HttpUrl
+    chunk_content: str
+
+
+class GroundedAnswer(BaseModel):
+    """Structured answer generated only from retrieved context."""
+
+    answer: str
+    supported: bool
+
+
+class AskResponse(BaseModel):
+    """Grounded answer plus the retrieved evidence used to generate it."""
+
+    question: str
+    answer: str
+    supported: bool
+    citations: list[AnswerCitation]

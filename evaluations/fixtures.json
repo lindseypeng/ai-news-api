@@ -1,0 +1,34 @@
+[
+  {
+    "source": "hackernews",
+    "source_id": "49396620",
+    "title": "4 in 10 travellers visit tourist sites to capture social media content",
+    "url": "https://www.tuigroup.com/en/newsroom/news/travel-in-the-age-of-scrolling-tui-musement-research-reveals-4-in-10-travellers-visit-tourist-sites-to-capture-social-media-content",
+    "author": "Markoff",
+    "content": "Among Gen Z travellers, TikTok was the leading source of travel inspiration at 48%, ahead of family and friends at 43%. Travel influencers were followed by 43% of respondents, and 27% said an influencer recommendation had caused them to change destination. An obsession with photos and social media was considered a red flag in a travel companion by 18% of respondents."
+  },
+  {
+    "source": "hackernews",
+    "source_id": "49389430",
+    "title": "Felony Bench",
+    "url": "https://www.felonybench.com/",
+    "author": "colinprince",
+    "content": "Felony Bench lists these counts of illegal activity. Anthropic rows: 1, 4, and 3. OpenAI rows: 2, 1, 4, and 1. Meta has one row with a count of 1. The methodology counts unique cases where AI agents affect third-party entities. Escaping a sandbox by itself is not a counted incident."
+  },
+  {
+    "source": "hackernews",
+    "source_id": "49390427",
+    "title": "Kobo can run apps now",
+    "url": "https://bandarlabs.github.io/Cobalt/",
+    "author": "thepoet",
+    "content": "Cobalt is an open-source application platform for Kobo e-readers. It is installed once over USB; afterward, apps install and update over Wi-Fi. Each app runs in its own unprivileged process. Cobalt does not replace Kobo's boot chain, and rebooting returns to the stock reader. Only the Kobo Clara BW profile has been hardware-tested."
+  },
+  {
+    "source": "hackernews",
+    "source_id": "49395628",
+    "title": "There's no reason for software to be slow anymore",
+    "url": "https://danluu.com/perf-opt/",
+    "author": "Jach",
+    "content": "For representative holdout ripgrep queries where AOT should be enabled, the measured speedup was about 7%. In the author's ripgrep query distribution, the p50 pattern length was 55 Unicode code points and the p90 was 119. Of all search queries, 99.9% were ASCII-only."
+  }
+]

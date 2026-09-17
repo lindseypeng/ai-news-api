@@ -66,6 +66,7 @@ curl http://localhost:8001/health/
 curl http://localhost:8001/news/
 curl http://localhost:8001/news/1
 curl "http://localhost:8001/search/?q=ai+privacy+concerns"
+curl -X POST http://localhost:8001/ask/ -H 'Content-Type: application/json' -d '{"question":"What percentage of search queries were ASCII-only?"}'
 ```
 
 Or open `http://localhost:8001/docs` for the interactive Swagger UI.
@@ -96,7 +97,11 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 - `app/database/` — SQLAlchemy connection, models (`news_items`, `news_chunks`), and queries
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
 - `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
+- `evaluations/` — fixed evaluation corpus, ground-truth questions, loader, and Week 6 RAG evaluation runner
 
 See `week5/README.md` for Docker packaging, deployment concepts, CI/CD,
 Supabase, Google Cloud Run, Secret Manager, Cloud Scheduler, and the optional
 Streamlit presentation layer.
+
+See `week6/README.md` for grounded question answering and evaluation against
+exact numeric, boolean, and short-text answers.

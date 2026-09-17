@@ -1,0 +1,87 @@
+[
+  {
+    "id": "travel_tiktok_gen_z",
+    "question": "What percentage of Gen Z travellers cited TikTok as their leading source of travel inspiration?",
+    "answer_type": "number",
+    "expected_answer": "48%",
+    "source_id": "49396620"
+  },
+  {
+    "id": "travel_changed_destination",
+    "question": "What percentage of respondents changed destination following a travel influencer's recommendation?",
+    "answer_type": "number",
+    "expected_answer": "27%",
+    "source_id": "49396620"
+  },
+  {
+    "id": "travel_red_flag",
+    "question": "What percentage considered an obsession with photos and social media a red flag in a travel companion?",
+    "answer_type": "number",
+    "expected_answer": "18%",
+    "source_id": "49396620"
+  },
+  {
+    "id": "felony_openai_total",
+    "question": "According to the Felony Bench table, what is the total count of OpenAI illegal activities across all listed OpenAI rows?",
+    "answer_type": "number",
+    "expected_answer": "8",
+    "source_id": "49389430"
+  },
+  {
+    "id": "felony_meta_total",
+    "question": "According to the Felony Bench table, how many illegal activities are listed for Meta?",
+    "answer_type": "number",
+    "expected_answer": "1",
+    "source_id": "49389430"
+  },
+  {
+    "id": "felony_sandbox_only",
+    "question": "True or false: Felony Bench counts escaping a sandbox by itself as an incident.",
+    "answer_type": "boolean",
+    "expected_answer": "false",
+    "source_id": "49389430"
+  },
+  {
+    "id": "kobo_apps_wifi",
+    "question": "True or false: after Cobalt's initial USB installation, apps can be installed and updated over Wi-Fi.",
+    "answer_type": "boolean",
+    "expected_answer": "true",
+    "source_id": "49390427"
+  },
+  {
+    "id": "kobo_boot_chain",
+    "question": "True or false: Cobalt replaces Kobo's boot chain.",
+    "answer_type": "boolean",
+    "expected_answer": "false",
+    "source_id": "49390427"
+  },
+  {
+    "id": "kobo_tested_model",
+    "question": "Which Kobo model is the only one stated to have been hardware-tested?",
+    "answer_type": "text",
+    "expected_answer": "Kobo Clara BW",
+    "accepted_answers": ["Clara BW"],
+    "source_id": "49390427"
+  },
+  {
+    "id": "software_holdout_speedup",
+    "question": "What speedup did the representative holdout ripgrep queries achieve when AOT should be enabled?",
+    "answer_type": "number",
+    "expected_answer": "7%",
+    "source_id": "49395628"
+  },
+  {
+    "id": "software_pattern_p50",
+    "question": "What was the p50 length of patterns in the author's ripgrep query distribution?",
+    "answer_type": "number",
+    "expected_answer": "55 characters",
+    "source_id": "49395628"
+  },
+  {
+    "id": "software_ascii_queries",
+    "question": "What percentage of the search queries were ASCII-only?",
+    "answer_type": "number",
+    "expected_answer": "99.9%",
+    "source_id": "49395628"
+  }
+]

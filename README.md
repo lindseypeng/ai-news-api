@@ -97,8 +97,6 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 - `app/schemas/` — shared Pydantic schemas (`NewsItem`, `SearchResult`)
 - `app/api/routes/` — FastAPI endpoints: `news.py` (list/get articles), `search.py` (semantic search), `health.py`
 
-See `week4/README.md` for how the semantic search feature was adapted from the tutorial exercises in `week4/rag-pipeline/` and `week4/pgvector-setup/`.
-
 See `week5/README.md` for Docker packaging, deployment concepts, CI/CD,
 Supabase, Google Cloud Run, Secret Manager, Cloud Scheduler, and the optional
 Streamlit presentation layer.

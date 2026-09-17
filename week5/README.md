@@ -1,8 +1,54 @@
-# Week 6: Deploying to Google Cloud Run
+# Week 5: Deployment, CI/CD, and Cloud Operations
 
 Goal: get the AI News API running live on the internet, with a database that
 isn't on our laptop, and a weekly job that keeps it updated automatically —
 no manual intervention required.
+
+## Week 5 learning goals
+
+By the end of this week, we can:
+
+- distinguish local, virtual-machine, container, platform, and serverless
+  deployment approaches;
+- explain how continuous integration and continuous deployment (CI/CD)
+  automate testing and releases;
+- package the application with Docker and test the image locally;
+- deploy the FastAPI service and batch pipeline on Google Cloud Run;
+- use Supabase for hosted PostgreSQL with pgvector;
+- keep credentials in Google Secret Manager;
+- schedule the pipeline with Google Cloud Scheduler; and
+- understand Streamlit as a simpler alternative for an interactive demo.
+
+## Deployment types and the approach used here
+
+| Type | What you manage | Typical use |
+| --- | --- | --- |
+| Local process | Application and machine | Development and debugging |
+| Virtual machine | OS, runtime, application, and scaling | Maximum infrastructure control |
+| Container | Image and application configuration | Portable, repeatable deployments |
+| Platform as a service | Application and configuration | Simple web application hosting |
+| Serverless container | Container and configuration | APIs and jobs that scale on demand |
+
+This project uses a **serverless container deployment**. Docker supplies one
+repeatable application image, while Cloud Run manages the servers, HTTPS,
+startup, and scaling. The API runs as a Cloud Run Service; the finite batch
+pipeline runs as a Cloud Run Job.
+
+## CI/CD concepts
+
+CI/CD is the automation path from a code change to a tested deployment:
+
+1. A developer pushes a change to the repository.
+2. **Continuous integration (CI)** installs dependencies and runs automated
+   checks such as tests, linting, and a Docker build.
+3. A successful build produces an immutable container image.
+4. **Continuous delivery/deployment (CD)** promotes that image to the target
+   environment, runs smoke tests, and makes rollback possible.
+
+The commands below perform those stages manually so that each part is visible.
+`gcloud run deploy --source .` already uses Cloud Build to build the image.
+A future repository workflow can run the tests and deployment command on every
+approved change without altering the application architecture.
 
 ## 1. Update and test the Dockerfile locally
 
@@ -246,3 +292,23 @@ pipeline writes data. FastAPI reads and serves stored data."*
 (`ON CONFLICT DO NOTHING`, `WHERE summary IS NULL`, absence-of-chunks
 checks), so the weekly trigger adds new articles without duplicating or
 re-processing anything already done.
+
+## Alternative: a simple interactive Streamlit deployment
+
+Streamlit is useful when the goal is a quick human-facing demonstration rather
+than a reusable API. A small Streamlit interface can call the deployed FastAPI
+endpoints and display recent articles or semantic-search results. It can be
+deployed separately on Streamlit Community Cloud while FastAPI remains the
+data and search backend.
+
+This is an alternative presentation layer, not a replacement for the current
+architecture:
+
+- FastAPI provides reusable JSON endpoints for applications and integrations.
+- Streamlit provides an interactive web interface with very little UI code.
+- PostgreSQL remains the source of truth, and the scheduled pipeline still
+  writes new data independently of user requests.
+
+For this project, Cloud Run is the primary production deployment. Streamlit is
+best treated as an optional demo client so the batch/API separation stays
+intact.

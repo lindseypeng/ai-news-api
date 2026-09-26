@@ -1,4 +1,4 @@
-from openai import OpenAI
+from langfuse.openai import OpenAI
 
 EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 1536

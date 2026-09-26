@@ -101,3 +101,6 @@ Note the quotes around the `/search/` URL — the `?` and `&` characters in a qu
 
 See `week6/README.md` for grounded question answering and evaluation against
 exact numeric, boolean, and short-text answers.
+
+See `week-7/README.md` for Langfuse observability and prompt-management labs,
+adapted to the AI News API.

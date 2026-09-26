@@ -5,6 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "dotenv>=0.9.9",
     "fastapi>=0.141.1",
+    "langfuse>=4.7.0",
     "openai>=3.3.1",
     "pgvector>=0.5.0",
     "psycopg2-binary>=2.9.12",

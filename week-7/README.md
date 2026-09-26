@@ -35,6 +35,81 @@ A useful way to explain the distinction is:
 | Score | A quality measurement attached to a trace or observation, from evaluation code, user feedback, or human review. |
 | Session | A group of related traces, such as all turns in one conversation. |
 
+### Minimum setup: two small code changes
+
+At minimum, Langfuse tracing can be added with two small code changes:
+
+```python
+from langfuse import observe
+from langfuse.openai import OpenAI  # replaces: from openai import OpenAI
+
+client = OpenAI()
+
+
+@observe(name="week-7-news-analysis")
+def analyze_news(title: str, content: str):
+    # Calls made with this client are traced automatically.
+    return client.responses.create(
+        model="gpt-4o-mini",
+        input=f"Title: {title}\n\nContent: {content}",
+    )
+```
+
+1. Replace the normal OpenAI import with Langfuse's instrumented OpenAI
+   wrapper. This automatically records the model, input, output, token usage,
+   latency, estimated cost, and errors.
+2. Add `@observe()` to the business operation. The decorator creates a named
+   parent observation that groups the work performed inside the function.
+
+The OpenAI wrapper can create a trace by itself, so the decorator is not
+strictly required. The decorator adds business meaning and becomes especially
+useful when one operation contains multiple steps:
+
+> One changed import gives us automatic model-call telemetry. One decorator
+> organizes that telemetry under a named business workflow.
+
+The credentials in `.env` are still required, but they are configuration rather
+than changes to the application logic.
+
+### Put multiple functions under one observed workflow
+
+Make the business operation the decorated parent, then call child functions
+from inside it. Langfuse propagates the active trace context automatically:
+
+```python
+from langfuse import observe
+
+
+@observe(name="retrieve-news", as_type="retriever")
+def retrieve_news(question: str):
+    return ["Relevant article chunk"]
+
+
+@observe(name="generate-answer", as_type="generation")
+def generate_answer(question: str, contexts: list[str]):
+    return "A grounded answer"
+
+
+@observe(name="answer-news-question", as_type="chain")
+def answer_news_question(question: str):
+    contexts = retrieve_news(question)
+    return generate_answer(question, contexts)
+```
+
+This produces one hierarchy:
+
+```text
+answer-news-question          <- parent business workflow
+  -> retrieve-news            <- child observation
+  -> generate-answer          <- child observation
+```
+
+There is no need to pass a trace ID between these synchronous functions. The
+nesting comes from calling the decorated children while the decorated parent is
+active. A regular, undecorated helper still runs under the parent, but it will
+not appear as its own step. OpenAI calls made through the Langfuse wrapper do
+appear automatically as generation children.
+
 ### What each Week 7 example demonstrates
 
 #### `week-7-simple-summary`
